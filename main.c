@@ -25,12 +25,12 @@ void main(void){
 
     *p2_dir |= 0x03; //Se habilita dos bits de entradas (G,R)
 
-    *p2_out ^= 0x01; //Se asigna 1
+    *p2_out ^= 0x03; //Se asigna un 2 (Verde)
     while(1){
-        if (*p2_out == 0x04)
-            *p2_out ^= 0x05;
+        if (*p2_out == 0x03)
+            *p2_out ^= 0x01;
         else
-            *p2_out += 0x01;
+            *p2_out ^= ((*p2_out) + 1);
 
         for(i=RETARDO ; i>0 ; i--);
     }
