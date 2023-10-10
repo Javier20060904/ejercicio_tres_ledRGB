@@ -28,18 +28,18 @@ void main(void){
 
     *p2_dir |= 0x03; //Se habilitan dos bits de entrada (G,R / P2.1,P2.0)
     *p2_dir &= ~0x10;//Habilita P2.4 como entrada
-    *p2_ren |= 0x10; //Se habilita el pullup/down en P2.4
+    *p2_ren |= 0x10; //Se habilita la resistencia de pull-up/down en P2.4
 
-    *p2_out = 0x02; //Se selecciona pullup para P2.4 y se asigna Verde a las salidas
+    *p2_out ^= 0x02; //Se selecciona pull-down para P2.4 y se asigna Verde a las salidas
 
     while(1){
-        if ((*p2_in & 0x10) && *p2_out != 0x03){    //Si se pulsa el botón y el color NO es Amarillo (3)...
-            *p2_out = *p2_out + 1;                  //Se cambia de color
-            for(i=RETARDO ; i>0 ; i--);
+        if ((*p2_in & 0x10) && *p2_out != 0x03){        //Si se pulsa el botón y el color NO es Amarillo (3)...
+            *p2_out = *p2_out + 1;                      //Se cambia de color
+            for(i=RETARDO ; i>0 ; i--);                 //for para crear delay
         }
         else if ((*p2_in & 0x10) && *p2_out == 0x03){   //Si se pulsa el botón y el color es Amarillo (3)...
-            *p2_out &= ~0x02;                       //Se reinicia a Rojo (1)
-            for(i=RETARDO ; i>0 ; i--);
+            *p2_out &= ~0x02;                           //Se reinicia a Rojo (1)
+            for(i=RETARDO ; i>0 ; i--);                 //for para crear delay
         }
     }
 }
