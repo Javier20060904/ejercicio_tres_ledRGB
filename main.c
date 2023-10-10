@@ -19,22 +19,27 @@ uint8_t *p2_ren = (uint8_t*)0x040004c07;
  */
 
 void main(void){
-    uint32_t i; //Para el ciclo for
+    uint32_t i; //Variable para el ciclo for
+
     WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;
+
     *p2_sel0 &= ~0x0F;
-    *p2_sel1 &= ~0x0F; //P2 en GPIO
+    *p2_sel1 &= ~0x0F; //P2 configurado en GPIO
 
-    *p2_dir ^= 0x03; //Se habilita dos bits de entradas (G,R)
-    *p2_ren |= 0x08; //Se habilita el pullup en P2.4
+    *p2_dir |= 0x03; //Se habilitan dos bits de entrada (G,R / P2.1,P2.0)
+    *p2_dir &= ~0x10;//Habilita P2.4 como entrada
+    *p2_ren |= 0x10; //Se habilita el pullup/down en P2.4
 
-    *p2_out ^= 0x03; //Se asigna un 2 (Verde)
+    *p2_out = 0x02; //Se selecciona pullup para P2.4 y se asigna Verde a las salidas
+
     while(1){
-        if (*p2_out == 0x03)
-            *p2_out ^= 0x01;
-        else
-            *p2_out ^= ((*p2_out) + 1);
-
-        for(i=RETARDO ; i>0 ; i--);
+        if ((*p2_in & 0x10) && *p2_out != 0x03){    //Si se pulsa el botón y el color NO es Amarillo (3)...
+            *p2_out = *p2_out + 1;                  //Se cambia de color
+            for(i=RETARDO ; i>0 ; i--);
+        }
+        else if ((*p2_in & 0x10) && *p2_out == 0x03){   //Si se pulsa el botón y el color es Amarillo (3)...
+            *p2_out &= ~0x02;                       //Se reinicia a Rojo (1)
+            for(i=RETARDO ; i>0 ; i--);
+        }
     }
 }
-
